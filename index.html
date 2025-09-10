@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Assistente de Objeções - Call Center</title>
+  <style>
+    :root{font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+    body{margin:0;padding:20px;background:#f5f7fb;color:#111}
+    .app{max-width:980px;margin:0 auto;background:#fff;padding:18px;border-radius:10px;box-shadow:0 8px 30px rgba(10,20,50,.06)}
+    h1{margin:0 0 8px;font-size:20px}
+    .controls{display:flex;gap:8px;margin:12px 0}
+    button{padding:8px 12px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer}
+    button.primary{background:#0b74de;color:#fff;border-color:transparent}
+    .status{font-size:13px;color:#666}
+    .panels{display:grid;grid-template-columns:1fr 360px;gap:12px;margin-top:14px}
+    textarea{width:100%;height:140px;padding:10px;border-radius:8px;border:1px solid #e3e6ee}
+    .transcript{height:220px;overflow:auto;padding:10px;border-radius:8px;border:1px solid #e3e6ee;background:#fbfdff}
+    .suggestions{display:flex;flex-direction:column;gap:8px}
+    .chip{padding:8px;border-radius:8px;border:1px dashed #cfd8e8;background:#fcfeff}
+    .small{font-size:13px;color:#555}
+    .tag{display:inline-block;padding:6px 8px;border-radius:999px;background:#eef6ff;color:#0359a6;border:1px solid #d6eafc;margin-right:6px;font-size:12px}
+    footer{margin-top:18px;font-size:13px;color:#666}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <h1>Assistente Dai</h1>
+    <div class="controls">
+      <button id="btnStart" class="primary">Iniciar gravação</button>
+      <button id="btnStop">Parar</button>
+      <button id="btnClear">Limpar</button>
+      <button id="btnAsk">Pedir sugestão da Assistente (servidor)</button>
+      <div style="flex:1"></div>
+      <div class="status" id="status">Status: parado</div>
+    </div>
+
+    <div class="panels">
+      <div>
+        <label class="small">Transcrição (ao vivo)</label>
+        <div id="transcript" class="transcript"></div>
+
+        <label class="small" style="margin-top:10px;display:block">Editor / Anotações</label>
+        <textarea id="editor" placeholder="Anotações sobre a ligação..."></textarea>
+      </div>
+
+      <div>
+        <label class="small">Objeções detectadas</label>
+        <div id="detected" style="min-height:120px;padding:10px;border-radius:8px;border:1px solid #eaeef6;background:#fff"></div>
+
+        <div style="height:12px"></div>
+        <label class="small">Sugestões rápidas</label>
+        <div class="suggestions" id="suggestions"></div>
+
+        <div style="height:12px"></div>
+        <label class="small">Sugestões</label>
+       <div id="tags" style="margin-top:16px; font-family: Arial, sans-serif;">
+
+
+      </div>
+
+    </div>
+  </div>
+        <h3>🤝 Objeções & Respostas</h3>
+
+  <div class="objection">
+    <strong>1. “Já tenho muitos cartões de crédito”</strong>
+    <ul>
+      <li>“Que bom, isso mostra que você já tem crédito aprovado e os bancos confiam em você. 
+      A diferença do nosso cartão é que ele <b>tem anuidade zero</b> e <b>dá cashback</b>. 
+      Pode substituir os outros e gerar economia. Quer que eu explique rapidinho?”</li>
+      <li>“Entendo, mas justamente por já ter cartões você sabe o quanto é importante ter um que realmente <b>traga benefícios</b>. 
+      O nosso gera <b>pontos em dobro</b> que você pode usar em viagens ou compras.”</li>
+    </ul>
+  </div>
+
+  <div class="objection">
+    <strong>2. “Não quero cartão de crédito”</strong>
+    <ul>
+      <li>“Tudo bem, só para você saber: o nosso cartão também funciona como <b>cartão de débito</b> e não tem custo de manutenção. 
+      Ou seja, você só usa se realmente quiser.”</li>
+      <li>“Muitas pessoas me dizem isso no começo, mas quando conhecem as vantagens como 
+      <b>zero anuidade e cashback em todas as compras</b>, acabam achando útil. Posso te contar em 1 minuto?”</li>
+    </ul>
+  </div>
+
+  <div class="objection">
+    <strong>3. “Não tenho interesse no momento”</strong>
+    <ul>
+      <li>“Perfeito, eu entendo. Posso apenas te mostrar os benefícios agora, 
+      e quando for o momento certo, você já vai estar informado e preparado.”</li>
+      <li>“Claro, sem problemas. Só para você ter em mente: 
+      o cartão dá <b>limite extra emergencial</b>, que pode ser útil em situações inesperadas. 
+      Posso te explicar em menos de 1 minuto?”</li>
+    </ul>
+  </div>
+
+  <div class="objection">
+    <strong>4. “Não obrigado”</strong>
+    <ul>
+      <li>“Tudo bem, mas antes de encerrar, posso só te contar um detalhe que costuma 
+      interessar bastante aos clientes? O cartão oferece <b>cashback em todas as compras</b>.”</li>
+      <li>“Sem problemas. Só para constar: ele não tem nenhuma taxa escondida e pode ser 
+      <b>cancelado a qualquer momento</b> sem custo.”</li>
+    </ul>
+  </div>
+
+  <div class="objection">
+    <strong>5. “Hoje não tenho interesse, quem sabe em outro momento”</strong>
+    <ul>
+      <li>“Entendo perfeitamente. Que tal eu te mostrar em 1 minutinho agora, 
+      assim quando chegar o momento certo, você já vai estar preparado para decidir?”</li>
+      <li>“Claro, sem problemas. Mas só para você saber, temos uma promoção ativa hoje que pode 
+      <b>não estar disponível depois</b>. Posso te explicar rapidinho?”</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+  // Exemplo simples: clique em uma objeção para destacar
+  document.querySelectorAll('.objection').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.objection').forEach(el => el.style.background = "none");
+      item.style.background = "#f0f0f0";
+    });
+  });
+</script>
+<script>
+// ======= Configurações/Mapeamento de objeções =======
+const objectionsMap = [
+  {pattern:/\b(muito[s]? cartões?|muitos cartões)\b/i, label:'Já tenho muitos cartões', answers:[
+    'Entendo — muitas pessoas pensam assim. Posso te mostrar em 30s um benefício que pode substituir um custo que você já tem?',
+    'Perfeito, então talvez não precise de mais um cartão — mas esse pode reduzir as taxas que você já paga. Quer ouvir em 20s?'
+  ]},
+  {pattern:/\b(não quero|nao quero|nao quero cartão|não quero cartão)\b/i, label:'Não quero', answers:[
+    'Compreendo. Se pudesse resolver X proble⁠ma sem aumentar seus custos, você consideraria?',
+    'Tudo bem — só 30 segundos: a oferta não tem anuidade no primeiro ano e pode te dar descontos, quer que eu explique?'
+  ]},
+  {pattern:/\b(não tenho interesse|sem interesse|nao tenho interesse)\b/i, label:'Sem interesse', answers:[
+    'Entendo. O que mais importa pra você hoje em relação aos seus cartões? Menos anuidade, cashback ou limite maior?',
+    'Ok — posso te mostrar uma vantagem em 20 segundos que muitas pessoas nem imaginam existir.'
+  ]},
+  {pattern:/\b(não obrigado|nao obrigado)\b/i, label:'Não obrigado', answers:[
+    'Obrigado pelo retorno — só pra eu melhorar: qual o motivo principal? (anuidade, já tem, prefere débito?)',
+    'Entendi. Posso te enviar as informações por SMS/WhatsApp para você olhar no seu tempo?' 
+  ]}
+];
+
+// ======= UI =======
+const btnStart = document.getElementById('btnStart');
+const btnStop = document.getElementById('btnStop');
+const btnClear = document.getElementById('btnClear');
+const btnAsk = document.getElementById('btnAsk');
+const statusEl = document.getElementById('status');
+const transcriptEl = document.getElementById('transcript');
+const editorEl = document.getElementById('editor');
+const detectedEl = document.getElementById('detected');
+const suggestionsEl = document.getElementById('suggestions');
+const tagsEl = document.getElementById('tags');
+
+let recognition, recognizing = false, fullTranscript = '';
+
+function setStatus(s){ statusEl.textContent = 'Status: ' + s; }
+
+// ======= Uso do Web Speech API (Chrome/Edge) =======
+if('webkitSpeechRecognition' in window || 'SpeechRecognition' in window){
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SpeechRecognition();
+  recognition.lang = 'pt-BR';
+  recognition.interimResults = true;
+  recognition.continuous = true;
+
+  recognition.onstart = () => { recognizing = true; setStatus('ouvindo...'); };
+  recognition.onerror = (e) => { console.error(e); setStatus('erro: ' + (e.error||'unknown')); };
+  recognition.onend = () => { recognizing = false; setStatus('parado'); };
+
+  recognition.onresult = (event) => {
+    let interim = '';
+    for(let i=event.resultIndex;i<event.results.length;i++){
+      const r = event.results[i];
+      if(r.isFinal){ fullTranscript += r[0].transcript + '\n'; }
+      else { interim += r[0].transcript; }
+    }
+    transcriptEl.innerText = fullTranscript + '\n' + interim;
+    detectObjections(transcriptEl.innerText);
+  };
+} else {
+  setStatus('SpeechRecognition não suportado neste navegador');
+}
+
+btnStart.addEventListener('click',()=>{
+  if(!recognition) return alert('SpeechRecognition não suportado');
+  try{ recognition.start(); setStatus('iniciando...'); }catch(e){ console.log(e); }
+});
+btnStop.addEventListener('click',()=>{ if(recognition) recognition.stop(); });
+btnClear.addEventListener('click',()=>{ fullTranscript=''; transcriptEl.innerText=''; editorEl.value=''; detectedEl.innerHTML=''; suggestionsEl.innerHTML=''; tagsEl.innerHTML=''; });
+
+// ======= Detecção simples de objeções =======
+function detectObjections(text){
+  const found = [];
+  objectionsMap.forEach(o=>{
+    if(o.pattern.test(text)) found.push(o);
+  });
+
+  detectedEl.innerHTML = '';
+  suggestionsEl.innerHTML = '';
+  tagsEl.innerHTML = '';
+
+  if(found.length===0){ detectedEl.innerHTML = '<div class="small">Nenhuma objeção detectada ainda.</div>'; return; }
+
+  found.forEach(o=>{
+    const div = document.createElement('div'); div.className='chip';
+    div.innerHTML = '<strong>'+o.label+'</strong><div class="small" style="margin-top:6px">' + o.pattern + '</div>';
+    detectedEl.appendChild(div);
+
+    // sugestões rápidas
+    o.answers.forEach(a=>{
+      const b = document.createElement('button'); b.className='chip'; b.textContent = a;
+      b.addEventListener('click',()=>{ copyToClipboard(a); highlightSuggestion(b); });
+      suggestionsEl.appendChild(b);
+    });
+
+    const tag = document.createElement('span'); tag.className='tag'; tag.textContent = o.label; tagsEl.appendChild(tag);
+  });
+}
+
+function highlightSuggestion(el){
+  const siblings = suggestionsEl.querySelectorAll('.chip'); siblings.forEach(s=>s.style.borderStyle='dashed');
+  el.style.borderStyle='solid';
+}
+
+function copyToClipboard(text){ navigator.clipboard.writeText(text).then(()=>{ alert('Resposta copiada para a área de transferência'); }); }
+
+// ======= Integração com Assistente (exemplo) =======
+// Ao clicar em "Pedir sugestão da Assistente", o frontend envia a transcrição para o seu backend
+// Endpoint exemplo: POST /api/assistant { transcript: "..." }
+// O backend então deve chamar a OpenAI (ou outro LLM) com a sua chave e devolver uma sugestão.
+
+btnAsk.addEventListener('click', async ()=>{
+  const transcript = transcriptEl.innerText.trim() + '\n' + editorEl.value.trim();
+  if(!transcript) return alert('Transcrição vazia');
+  setStatus('enviando para servidor...');
+  try{
+    const res = await fetch('/api/assistant', {
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({transcript})
+    });
+    if(!res.ok) throw new Error('erro '+res.status);
+    const json = await res.json();
+    // espera { suggestion: 'texto...' }
+    if(json.suggestion){
+      const el = document.createElement('div'); el.className='chip'; el.textContent = json.suggestion; el.addEventListener('click',()=>copyToClipboard(json.suggestion));
+      suggestionsEl.prepend(el);
+      setStatus('sugestão recebida');
+    } else {
+      setStatus('resposta sem sugestão');
+    }
+  }catch(err){
+    console.error(err); setStatus('erro ao chamar servidor');
+  }
+});
+
+</script>
+</body>
+</html>
